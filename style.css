@@ -1,0 +1,22 @@
+.wrapper{
+    padding-top: 50px;
+    text-align: center;
+}
+.spanLeaf{
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    width: 100px;
+}
+.spanLeaf:focus{
+    background-color: blue;
+    color: white;
+    border: none;
+    outline: none;
+}
+.visibleLeaf{
+    /* display: none; */
+}
+.imageH:hover{
+    cursor: pointer;
+}
