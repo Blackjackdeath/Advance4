@@ -10,9 +10,12 @@ function buildHTML(obj, marginLeft, image, selector) {
     }
     else {
         checkLeaf = '';
-    }
-    document.querySelector(selector).innerHTML = document.querySelector(selector).innerHTML + `<div style="margin-left: ${marginLeft}px" class="visibleLeaf"><img src="${image}" alt="" class="${checkLeaf}"><input class="spanLeaf" value="elem${obj}"></input></div>`;
-    //console.log(document.getElementsByTagName('img'));
+    };
+    let elem = document.createElement('div');
+    elem.style.marginLeft = marginLeft + 'px';
+    elem.style.display = 'none';
+    elem.innerHTML = `<img src="${image}" alt="" class="${checkLeaf}"><input class="spanLeaf" value="elem${obj}"></input>`;
+    document.querySelector(selector).appendChild(elem);
 
 }
 function undefindObj(obj, i, selector) {
@@ -21,11 +24,8 @@ function undefindObj(obj, i, selector) {
     }
     else {
         if (Array.isArray(obj[i])) {
-            document.querySelector(selector).innerHTML = document.querySelector(selector).innerHTML+`<div style="margin-left: ${marginLeft}px" class="visibleLeaf"></div>`;
-            buildHTML(i + 1, marginLeft, './plus.png', '.wrapper:last-child');
-            marginLeft += 35;
-            undefindObj(obj[i], 0, selector);
-            marginLeft -= 35;
+            buildHTML(i + 1, marginLeft, './plus.png', selector);
+            undefindObj(obj[i], 0, selector + '>div:last-child');
             i++;
             return undefindObj(obj, i, selector);
         }
@@ -33,17 +33,32 @@ function undefindObj(obj, i, selector) {
             buildHTML(i + 1, marginLeft, './zero.png', selector);
             i++;
             return undefindObj(obj, i, selector);
-        }
-    }
-}
+        };
+    };
+};
 function builfTree() {
-    leafs.addEventListener('click', (branch)=>{
-        console.log();
-        if(branch.target.getAttribute('src')==='./plus.png'){
-
+    leafs.addEventListener('click', (branch) => {
+        if (branch.target.getAttribute('src') === './plus.png') {
+            for (let i = 0; i < branch.target.parentElement.children.length; i++) {
+                if (branch.target.parentElement.children[i].nodeName === 'DIV') {
+                    branch.target.parentElement.children[i].style.display = 'block';
+                };
+            };
+            branch.target.setAttribute('src', './minus.png');
         }
+        else {
+            if (branch.target.getAttribute('src') === './minus.png') {
+                for (let i = 0; i < branch.target.parentElement.getElementsByTagName('div').length; i++) {
+                    branch.target.parentElement.getElementsByTagName('div')[i].style.display = 'none';
+                    if (branch.target.parentElement.getElementsByTagName('div')[i].children[0].getAttribute('src') === './minus.png') {
+                        branch.target.parentElement.getElementsByTagName('div')[i].children[0].setAttribute('src', './plus.png');
+                    };
+                };
+                branch.target.setAttribute('src', './plus.png');
+            };
+        };
     });
 };
-undefindObj(array, i, '.wrapper');
-//builfTree();
+undefindObj(array, i, '.wrapper > div');
+builfTree();
 

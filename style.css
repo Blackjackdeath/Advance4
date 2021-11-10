@@ -15,7 +15,7 @@
     outline: none;
 }
 .visibleLeaf{
-    /* display: none; */
+    display: none;
 }
 .imageH:hover{
     cursor: pointer;
