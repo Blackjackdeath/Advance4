@@ -36,7 +36,31 @@ function undefindObj(obj, i, selector) {
         };
     };
 };
-function builfTree() {
+function upDepth(elem){
+    if(elem.nodeName==='DIV' && elem.children[0].getAttribute('src') === './minus.png'){
+        return upDepth(elem.children[elem.children.length-1]);
+    }
+    else{
+        elem.children[elem.children.length-1].focus();
+        return;
+    }
+}
+function upRecursion(event){
+    if(event.target.parentElement.previousElementSibling.nodeName === 'DIV' && event.target.parentElement.previousElementSibling.children[0].getAttribute('src') === './minus.png'){
+        upDepth(event.target.parentElement.previousElementSibling);
+    }
+    else{
+        if(event.target.parentElement.previousElementSibling.nodeName === 'DIV'){
+            event.target.parentElement.previousElementSibling.children[1].focus();
+            return;
+        }
+        else{
+            event.target.parentElement.previousElementSibling.focus();
+            return;
+        };
+    };
+}
+function bindEvent() {
     leafs.addEventListener('click', (branch) => {
         if (branch.target.getAttribute('src') === './plus.png') {
             for (let i = 0; i < branch.target.parentElement.children.length; i++) {
@@ -58,7 +82,30 @@ function builfTree() {
             };
         };
     });
+    leafs.addEventListener('keyup', (event) => {
+        if (event.key === 'ArrowUp') {
+            if (event.target.parentElement.previousElementSibling === null){
+                return
+            };
+            upRecursion(event);
+            // if(event.target.parentElement.previousElementSibling.nodeName === 'DIV' && event.target.parentElement.previousElementSibling.children[0].getAttribute('src') === './minus.png'){
+            //     event.target.parentElement.previousElementSibling.children[event.target.parentElement.previousElementSibling.children.length-1].children[1].focus();
+            // }
+            // else{
+            //     if(event.target.parentElement.previousElementSibling.nodeName === 'DIV'){
+            //         event.target.parentElement.previousElementSibling.children[1].focus();
+            //     }
+            //     else{
+            //         event.target.parentElement.previousElementSibling.focus();
+            //     };
+            // };
+        }
+        if (event.key === 'ArrowDown') {
+            alert('Down');
+        }
+    })
 };
 undefindObj(array, i, '.wrapper > div');
-builfTree();
+bindEvent();
+document.getElementsByTagName('input')[0].focus()
 
