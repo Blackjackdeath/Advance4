@@ -7,7 +7,7 @@ let leafs = document.querySelector('.wrapper');
 function buildHTML(obj, marginLeft, image, selector) {
     let checkLeaf = '';
     let nameLeaf = '';
-    let canvasBranch='';
+    let canvasBranch = '';
     if (image === './plus.png') {
         checkLeaf = 'imageH'
     }
@@ -21,13 +21,13 @@ function buildHTML(obj, marginLeft, image, selector) {
         nameLeaf = ' Folder';
     }
     else {
-        nameLeaf = 'name: '+obj.name+' url: '+obj.url;
+        nameLeaf = 'name: ' + obj.name + ' url: ' + obj.url;
     };
-    if (image==='0'){
-        canvasBranch=`<div class="branch" src="0"></div>`
+    if (image === '0') {
+        canvasBranch = `<div class="branch" src="0"></div>`
     }
-    else{
-        canvasBranch=`<img src="${image}" alt="" class="${checkLeaf}">`  
+    else {
+        canvasBranch = `<img src="${image}" alt="" class="${checkLeaf}">`
     }
     elem.innerHTML = `${canvasBranch}<input class="spanLeaf" value="${nameLeaf}" "></input>`;
     document.querySelector(selector).appendChild(elem);
@@ -67,21 +67,25 @@ function upDepth(elem) {
         return;
     };
 };
+
+// функція бульбашка для піднімання по дом дереву
+function bubble(element) {
+    element = element.parentElement;
+    if (downDepth(element) === null) {
+        if (element.classList.contains('wrapper')) {
+            return
+        }
+        bubble(element);
+    };
+}
+
 //Функція занурення по DOM дерево для клавіші keyDown
 function downDepth(elem) {
-    if (elem.nextElementSibling === null && elem.parentElement.nextElementSibling === null) {
-        return
-    }
-    else {
-        if (elem.nextElementSibling === null && elem.parentElement.nextElementSibling !== null) {
-            elem.parentElement.nextElementSibling.children[1].focus();
-        }
-        else {
-            elem.nextElementSibling.children[1].focus();
-        };
+    if (elem.nextElementSibling === null) {
+        return null
     };
+    elem.nextElementSibling.children[1].focus();
 };
-
 // Функція руху вниз
 function downMove(event) {
     if (event.target.parentElement.nextElementSibling === null && event.target.previousElementSibling.getAttribute('src') === './plus.png') {
@@ -95,7 +99,9 @@ function downMove(event) {
             event.target.nextElementSibling.children[1].focus();
         };
         if (event.target.previousElementSibling.getAttribute('src') === '0') {
-            downDepth(event.target.parentElement);
+            if (downDepth(event.target.parentElement) === null) {
+                bubble(event.target);
+            };
         };
     };
 };
@@ -119,13 +125,36 @@ function upMove(event) {
         };
     };
 };
+// Функція кліку миші
+function branch(event) {
+    if (event.target.getAttribute('src') === './plus.png') {
+        for (let i = 0; i < event.target.parentElement.children.length; i++) {
+            if (event.target.parentElement.children[i].nodeName === 'DIV') {
+                event.target.parentElement.children[i].style.display = 'block';
+            };
+        };
+        event.target.setAttribute('src', './minus.png');
+    }
+    else {
+        if (event.target.getAttribute('src') === './minus.png') {
+            for (let i = 0; i < event.target.parentElement.getElementsByTagName('div').length; i++) {
+                if (event.target.parentElement.getElementsByTagName('div')[i].classList.contains('branch')) {
+                }
+                else {
+                    event.target.parentElement.getElementsByTagName('div')[i].style.display = 'none';
+                    if (event.target.parentElement.getElementsByTagName('div')[i].children[0].getAttribute('src') === './minus.png') {
+                        event.target.parentElement.getElementsByTagName('div')[i].children[0].setAttribute('src', './plus.png');
+                    };
+                }
 
-function Branch(event){
-
+            };
+            event.target.setAttribute('src', './plus.png');
+        };
+    };
 }
-
-function enterPush(event){
-    if(event.target.previousElementSibling.getAttribute('src') === './plus.png'){
+//Функція Enter
+function enterPush(event) {
+    if (event.target.previousElementSibling.getAttribute('src') === './plus.png') {
         console.log(event.target.parentElement.children);
         for (let i = 0; i < event.target.parentElement.children.length; i++) {
             if (event.target.parentElement.children[i].nodeName === 'DIV') {
@@ -148,26 +177,8 @@ function enterPush(event){
 }
 //Функція привязки подій
 function bindEvent() {
-    leafs.addEventListener('click', (branch) => {
-        if (branch.target.getAttribute('src') === './plus.png') {
-            for (let i = 0; i < branch.target.parentElement.children.length; i++) {
-                if (branch.target.parentElement.children[i].nodeName === 'DIV') {
-                    branch.target.parentElement.children[i].style.display = 'block';
-                };
-            };
-            branch.target.setAttribute('src', './minus.png');
-        }
-        else {
-            if (branch.target.getAttribute('src') === './minus.png') {
-                for (let i = 0; i < branch.target.parentElement.getElementsByTagName('div').length; i++) {
-                    branch.target.parentElement.getElementsByTagName('div')[i].style.display = 'none';
-                    if (branch.target.parentElement.getElementsByTagName('div')[i].children[0].getAttribute('src') === './minus.png') {
-                        branch.target.parentElement.getElementsByTagName('div')[i].children[0].setAttribute('src', './plus.png');
-                    };
-                };
-                branch.target.setAttribute('src', './plus.png');
-            };
-        };
+    leafs.addEventListener('click', (event) => {
+        branch(event);
     });
     leafs.addEventListener('keyup', (event) => {
         if (event.key === 'ArrowUp') {
@@ -177,7 +188,7 @@ function bindEvent() {
             downMove(event);
         }
         if (event.key === 'Enter') {
-            enterPush(event);
+            branch(event);
         }
     })
 };
