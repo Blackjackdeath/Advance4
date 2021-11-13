@@ -6,7 +6,8 @@ let leafs = document.querySelector('.wrapper');
 //Побудова HTML дерева
 function buildHTML(obj, marginLeft, image, selector) {
     let checkLeaf = '';
-    let s = '';
+    let nameLeaf = '';
+    let canvasBranch='';
     if (image === './plus.png') {
         checkLeaf = 'imageH'
     }
@@ -17,12 +18,18 @@ function buildHTML(obj, marginLeft, image, selector) {
     elem.style.marginLeft = marginLeft + 'px';
     elem.style.display = 'none';
     if (obj === ' Folder') {
-        s = ' Folder';
+        nameLeaf = ' Folder';
     }
     else {
-        s = 'name: '+obj.name+' url: '+obj.url;
+        nameLeaf = 'name: '+obj.name+' url: '+obj.url;
+    };
+    if (image==='0'){
+        canvasBranch=`<div class="branch" src="0"></div>`
     }
-    elem.innerHTML = `<img src="${image}" alt="" class="${checkLeaf}"><input class="spanLeaf" value="${s}" "></input>`;
+    else{
+        canvasBranch=`<img src="${image}" alt="" class="${checkLeaf}">`  
+    }
+    elem.innerHTML = `${canvasBranch}<input class="spanLeaf" value="${nameLeaf}" "></input>`;
     document.querySelector(selector).appendChild(elem);
 
 };
@@ -40,7 +47,7 @@ function undefindObj(obj, i, selector) {
             return undefindObj(obj, i, selector);
         }
         else {
-            buildHTML(obj[i], marginLeft, './zero.png', selector);
+            buildHTML(obj[i], marginLeft, '0', selector);
             i++;
             return undefindObj(obj, i, selector);
         };
@@ -60,7 +67,6 @@ function upDepth(elem) {
         return;
     };
 };
-
 //Функція занурення по DOM дерево для клавіші keyDown
 function downDepth(elem) {
     if (elem.nextElementSibling === null && elem.parentElement.nextElementSibling === null) {
@@ -88,7 +94,7 @@ function downMove(event) {
         if (event.target.previousElementSibling.getAttribute('src') === './minus.png') {
             event.target.nextElementSibling.children[1].focus();
         };
-        if (event.target.previousElementSibling.getAttribute('src') === './zero.png') {
+        if (event.target.previousElementSibling.getAttribute('src') === '0') {
             downDepth(event.target.parentElement);
         };
     };
@@ -114,6 +120,10 @@ function upMove(event) {
     };
 };
 
+function Branch(event){
+
+}
+
 function enterPush(event){
     if(event.target.previousElementSibling.getAttribute('src') === './plus.png'){
         console.log(event.target.parentElement.children);
@@ -126,7 +136,7 @@ function enterPush(event){
     }
     else {
         if (event.target.previousElementSibling.getAttribute('src') === './minus.png') {
-            for (let i = 0; i < branch.target.parentElement.getElementsByTagName('div').length; i++) {
+            for (let i = 0; i < event.target.parentElement.getElementsByTagName('div').length; i++) {
                 event.target.parentElement.getElementsByTagName('div')[i].style.display = 'none';
                 if (event.target.parentElement.getElementsByTagName('div')[i].children[0].getAttribute('src') === './minus.png') {
                     event.target.parentElement.getElementsByTagName('div')[i].children[0].setAttribute('src', './plus.png');
@@ -175,5 +185,6 @@ function bindEvent() {
 //Основна робота програми
 undefindObj(array, i, '.wrapper > div');
 bindEvent();
-document.getElementsByTagName('input')[0].focus()
+document.getElementsByTagName('input')[0].focus();
+//не працює занурення на стрілочку вниз якщо проде дз розібратися в мабутьньому
 

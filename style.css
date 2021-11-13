@@ -20,3 +20,10 @@
 .imageH:hover{
     cursor: pointer;
 }
+.branch{
+    width: 16px;
+    height: 25px;
+    border-left: dotted 1px black;
+    border-bottom: dotted 1px black;
+    display: inline-block;
+}
