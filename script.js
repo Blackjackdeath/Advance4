@@ -197,5 +197,5 @@ function bindEvent() {
 undefindObj(array, i, '.wrapper > div');
 bindEvent();
 document.getElementsByTagName('input')[0].focus();
-//не працює занурення на стрілочку вниз якщо проде дз розібратися в мабутьньому
+
 
